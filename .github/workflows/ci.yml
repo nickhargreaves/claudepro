@@ -12,6 +12,10 @@ jobs:
     defaults:
       run:
         working-directory: backend
+    env:
+      # Tests mock every Claude API call (see backend/tests/test_triage.py) —
+      # this only needs to be non-empty so pydantic-settings validation passes.
+      ANTHROPIC_API_KEY: ci-placeholder-not-a-real-key
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v3

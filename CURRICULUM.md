@@ -9,7 +9,7 @@ tracks progress.
 - [x] 00 — Setup
 - [x] 01 — Foundations (CLAUDE.md, plan mode)
 - [x] 02 — Agentic workflow (skills, subagents, hooks)
-- [ ] 03 — Testing (pytest, Vitest, verify skill)
+- [x] 03 — Testing (pytest, Vitest, verify skill)
 - [ ] 04 — CI/CD (GitHub Actions, code-review, ultrareview)
 - [ ] 05 — Deployment (Docker, secrets, real deploy target)
 - [ ] 06 — Observability (structured logging, LLM call tracing)
@@ -51,8 +51,27 @@ tracks progress.
   end across backend/frontend — subagent returned cited file:line findings
   independently
 
-## Phase 03 — Testing (next)
+## Phase 03 — Testing
 
-Goal: pytest for the API (already have some coverage — extend it), Vitest +
-React Testing Library for the frontend, TDD loop, and the `verify` skill for
-end-to-end proof beyond green tests.
+- Vitest + React Testing Library set up in `frontend/` (`vitest`, RTL,
+  `jest-dom`, `user-event`, `jsdom`; config lives in `vite.config.ts`'s
+  `test` block; `npm run test`)
+- 5 characterization tests for existing `App.tsx` behavior (`api` module
+  mocked at the boundary, mirroring the backend's `monkeypatch` pattern)
+- TDD exercise: "confirm before delete" — wrote the failing test first
+  (`window.confirm` assertions), watched it fail against the real
+  `handleDelete`, then implemented the guard and watched it go green;
+  added a second case for the cancel path
+- Backend gap-fill: added a missing-title → 422 validation test
+  (`backend/tests/test_tasks.py`)
+- Ran the `verify` skill end-to-end in a live browser: proved the
+  DELETE-on-confirm and no-DELETE-on-cancel paths via real network
+  requests, not just mocked assertions — found one real gap (headless
+  automation auto-accepts native `confirm()` dialogs, so the dialog *text*
+  is only actually asserted by the Vitest test, not by the browser run)
+
+## Phase 04 — CI/CD (next)
+
+Goal: GitHub Actions running lint/typecheck/test on both backend and
+frontend on every PR, `/code-review` on a real PR before merging, and branch
+protection so the pipeline is enforced, not advisory.

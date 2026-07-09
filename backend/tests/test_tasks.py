@@ -44,3 +44,8 @@ def test_unknown_task_returns_404() -> None:
     assert client.get("/tasks/does-not-exist").status_code == 404
     assert client.patch("/tasks/does-not-exist", json={"status": "done"}).status_code == 404
     assert client.delete("/tasks/does-not-exist").status_code == 404
+
+
+def test_create_task_without_title_is_rejected() -> None:
+    response = client.post("/tasks", json={"description": "no title given"})
+    assert response.status_code == 422

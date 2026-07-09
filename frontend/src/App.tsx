@@ -38,6 +38,7 @@ function App() {
   }
 
   async function handleDelete(task: Task) {
+    if (!window.confirm(`Delete "${task.title}"?`)) return
     await deleteTask(task.id)
     refreshTasks()
   }

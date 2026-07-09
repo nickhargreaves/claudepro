@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=$(jq -r '.tool_input.file_path // .tool_response.filePath'); case \"$f\" in *\"/backend/\"*) (cd backend && source $HOME/.local/bin/env && uv run ruff check --fix .) ;; *\"/frontend/\"*) (cd frontend && npx oxlint --fix) ;; esac 2>/dev/null || true"
+          }
+        ]
+      }
+    ]
+  }
+}

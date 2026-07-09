@@ -32,9 +32,15 @@ tracks progress.
 - Frontend: task list + add/status-change/delete UI wired to the API,
   verified live in the browser (create → update → delete round trip)
 
-## Phase 02 — Agentic workflow (next)
+## Phase 02 — Agentic workflow (in progress)
 
-Goal: custom skills (`/new-endpoint`), hooks (auto-run ruff/oxlint on edit),
-narrower permission allowlists, and an Explore subagent exercise once the
-codebase has more surface area. Milestone: an AI-triage endpoint built using
-a self-authored skill.
+- [x] `ANTHROPIC_API_KEY` wired via `pydantic-settings`, read from gitignored
+      `backend/.env`
+- [x] `/new-endpoint` project skill written (`.claude/commands/new-endpoint.md`)
+- [x] Milestone: AI-triage endpoint (`POST /tasks/{id}/triage`) scaffolded
+      with `/new-endpoint` — Claude tool-use call suggests a priority +
+      rationale without mutating the task; 404/502 handled; tests mock the
+      Claude call; frontend has a matching wrapper + "Suggest priority" button
+- [ ] Hook: auto-run `ruff`/`oxlint` after edits
+- [ ] Narrow the permission allowlist in `.claude/settings.json`
+- [ ] Explore subagent exercise (delegate a "where does X happen" question)

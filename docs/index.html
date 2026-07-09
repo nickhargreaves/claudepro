@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude Mastery: TaskFlow Curriculum</title>
+<style>
+  :root {
+    --paper: #eef1f4;
+    --paper-raised: #ffffff;
+    --ink: #1b2430;
+    --ink-soft: #4a5568;
+    --line: #d7dce2;
+    --accent: #b8862e;
+    --accent-ink: #6e4e17;
+    --teal: #1f6f5c;
+    --teal-soft: #e3efec;
+    --danger: #a03e3e;
+    --radius: 3px;
+  }
+  :root[data-theme="dark"] {
+    --paper: #14181d;
+    --paper-raised: #1c2229;
+    --ink: #e8e6de;
+    --ink-soft: #a8aeb8;
+    --line: #333c46;
+    --accent: #d9a03f;
+    --accent-ink: #f0c274;
+    --teal: #4fae95;
+    --teal-soft: #1b2b28;
+    --danger: #d97878;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #14181d;
+      --paper-raised: #1c2229;
+      --ink: #e8e6de;
+      --ink-soft: #a8aeb8;
+      --line: #333c46;
+      --accent: #d9a03f;
+      --accent-ink: #f0c274;
+      --teal: #4fae95;
+      --teal-soft: #1b2b28;
+      --danger: #d97878;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+    line-height: 1.55;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .wrap { max-width: 980px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+
+  header.masthead {
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 2rem;
+    margin-bottom: 2.5rem;
+  }
+  .eyebrow {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin: 0 0 0.9rem;
+  }
+  h1 {
+    font-family: Georgia, "Iowan Old Style", ui-serif, serif;
+    font-weight: 600;
+    font-size: clamp(2rem, 4vw, 2.7rem);
+    letter-spacing: -0.01em;
+    margin: 0 0 0.6rem;
+    text-wrap: balance;
+  }
+  .dek {
+    color: var(--ink-soft);
+    font-size: 1.05rem;
+    max-width: 62ch;
+    margin: 0 0 1.4rem;
+  }
+  .stack-tags {
+    display: flex; gap: 0.5rem; flex-wrap: wrap;
+    margin-bottom: 1.2rem;
+  }
+  .tag {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 0.75rem;
+    padding: 0.28rem 0.6rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: var(--ink-soft);
+    background: var(--paper-raised);
+  }
+  .repo-link {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 0.8rem;
+    color: var(--teal);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+  }
+  .repo-link:hover, .repo-link:focus-visible { border-bottom-color: var(--teal); }
+
+  .project-brief {
+    background: var(--teal-soft);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.3rem 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .project-brief h2 {
+    font-family: Georgia, ui-serif, serif;
+    font-size: 1.15rem;
+    margin: 0 0 0.5rem;
+    color: var(--teal);
+  }
+  .project-brief p { margin: 0; color: var(--ink); font-size: 0.97rem; }
+
+  .progress {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+  }
+  .progress-bar {
+    flex: 1;
+    min-width: 180px;
+    height: 6px;
+    background: var(--line);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    width: 57%;
+    background: var(--teal);
+    border-radius: 999px;
+  }
+  .progress-label {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+
+  nav.toc {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.5rem;
+    margin-bottom: 3.5rem;
+  }
+  nav.toc a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.4rem;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 0.72rem;
+    text-decoration: none;
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 0.5rem 0.6rem;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+  nav.toc a:hover, nav.toc a:focus-visible {
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+  nav.toc a .n { color: var(--accent); margin-right: 0.35em; }
+  nav.toc a .dot {
+    width: 0.4rem; height: 0.4rem; border-radius: 50%;
+    background: var(--line); flex-shrink: 0;
+  }
+  nav.toc a.done .dot { background: var(--teal); }
+
+  section.phase {
+    border-top: 1px solid var(--line);
+    padding: 2.4rem 0;
+    scroll-margin-top: 1rem;
+  }
+  section.phase:first-of-type { border-top: none; }
+
+  .phase-head {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    gap: 0.75rem;
+    align-items: baseline;
+    margin-bottom: 1.1rem;
+  }
+  .phase-num {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 0.85rem;
+    color: var(--accent);
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 0.15rem 0.55rem;
+    white-space: nowrap;
+  }
+  .status-pill {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    white-space: nowrap;
+    align-self: center;
+  }
+  .status-pill.done { background: var(--teal-soft); color: var(--teal); }
+  .status-pill.next { background: var(--line); color: var(--ink-soft); }
+  h2.phase-title {
+    font-family: Georgia, ui-serif, serif;
+    font-size: 1.45rem;
+    font-weight: 600;
+    margin: 0;
+    text-wrap: balance;
+    grid-column: 1 / -1;
+  }
+  .phase-sub { color: var(--ink-soft); font-size: 0.95rem; margin: 0 0 1.3rem; max-width: 68ch; }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 1rem;
+  }
+  .card {
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1rem 1.1rem;
+  }
+  .card .label {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin: 0 0 0.5rem;
+  }
+  .card ul { margin: 0; padding-left: 1.1rem; font-size: 0.9rem; }
+  .card li { margin-bottom: 0.35rem; }
+  .card li:last-child { margin-bottom: 0; }
+  .card p { margin: 0; font-size: 0.9rem; }
+  .card a { color: var(--teal); }
+
+  .milestone {
+    margin-top: 1.1rem;
+    display: flex;
+    gap: 0.7rem;
+    align-items: flex-start;
+    background: var(--teal-soft);
+    border-radius: var(--radius);
+    padding: 0.85rem 1rem;
+  }
+  .milestone .dot {
+    width: 0.5rem; height: 0.5rem; border-radius: 50%;
+    background: var(--teal); margin-top: 0.4rem; flex-shrink: 0;
+  }
+  .milestone p { margin: 0; font-size: 0.92rem; }
+  .milestone strong { color: var(--teal); }
+
+  footer.note {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    color: var(--ink-soft);
+    font-size: 0.88rem;
+  }
+  footer.note a { color: var(--teal); }
+
+  table.matrix {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.87rem;
+  }
+  table.matrix th, table.matrix td {
+    text-align: left;
+    padding: 0.55rem 0.7rem;
+    border-bottom: 1px solid var(--line);
+  }
+  table.matrix th {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  table.matrix td.status-done { color: var(--teal); font-family: ui-monospace, monospace; font-size: 0.8rem; }
+  table.matrix td.status-next { color: var(--ink-soft); font-family: ui-monospace, monospace; font-size: 0.8rem; }
+  .matrix-wrap { overflow-x: auto; margin-bottom: 3rem; }
+
+  code {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    background: var(--teal-soft);
+    padding: 0.1em 0.35em;
+    border-radius: 2px;
+    font-size: 0.9em;
+    color: var(--accent-ink);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    nav.toc a { transition: border-color 0.15s ease, color 0.15s ease; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Curriculum &middot; Claude Code / Desktop / Cowork</p>
+    <h1>From daily user to Claude power user</h1>
+    <p class="dek">Seven phases, one running project. Each phase pairs a Claude capability with a milestone on <strong>TaskFlow</strong> — an AI-augmented task manager built with a Python backend and a TypeScript frontend — so the practice is never abstract.</p>
+    <div class="stack-tags">
+      <span class="tag">FastAPI</span>
+      <span class="tag">React + Vite + TS</span>
+      <span class="tag">pytest / vitest</span>
+      <span class="tag">GitHub Actions</span>
+      <span class="tag">Docker</span>
+      <span class="tag">Claude Agent SDK</span>
+    </div>
+    <a class="repo-link" href="https://github.com/nickhargreaves/claudepro">github.com/nickhargreaves/claudepro &rarr;</a>
+  </header>
+
+  <div class="project-brief">
+    <h2>The project: TaskFlow</h2>
+    <p>A small task tracker with one twist — it uses the Claude API itself to triage new tasks. That gives the curriculum a real reason to touch every part of the lifecycle: an API to test, a UI to ship, an LLM call to observe, and a deploy target to watch in production.</p>
+  </div>
+
+  <div class="progress">
+    <span class="progress-label">4 / 7 phases done</span>
+    <span class="progress-bar"><span class="progress-bar-fill"></span></span>
+  </div>
+
+  <nav class="toc" aria-label="Phase index">
+    <a href="#p0" class="done"><span><span class="n">00</span>Setup</span><span class="dot"></span></a>
+    <a href="#p1" class="done"><span><span class="n">01</span>Foundations</span><span class="dot"></span></a>
+    <a href="#p2" class="done"><span><span class="n">02</span>Agentic workflow</span><span class="dot"></span></a>
+    <a href="#p3" class="done"><span><span class="n">03</span>Testing</span><span class="dot"></span></a>
+    <a href="#p4" class="done"><span><span class="n">04</span>CI/CD</span><span class="dot"></span></a>
+    <a href="#p5"><span><span class="n">05</span>Deployment</span><span class="dot"></span></a>
+    <a href="#p6"><span><span class="n">06</span>Observability</span><span class="dot"></span></a>
+    <a href="#p7"><span><span class="n">07</span>MCP &amp; agents</span><span class="dot"></span></a>
+  </nav>
+
+  <section class="phase" id="p0">
+    <div class="phase-head">
+      <span class="phase-num">00</span>
+      <span class="status-pill done">Done</span>
+      <h2 class="phase-title">Setup — one honest hour</h2>
+    </div>
+    <p class="phase-sub">Before any lesson: get the repo, the CLI, and terminal habits in order so later phases aren't fighting the environment.</p>
+    <div class="cards">
+      <div class="card">
+        <p class="label">What happened</p>
+        <ul>
+          <li>Repo initialized, <code>uv</code> installed for Python tooling</li>
+          <li><code>backend/</code> — FastAPI scaffold managed with <code>uv</code></li>
+          <li><code>frontend/</code> — Vite + React + TypeScript scaffold</li>
+          <li><code>/health</code> wired end-to-end, verified live in the browser</li>
+        </ul>
+      </div>
+      <div class="card">
+        <p class="label">Why it matters</p>
+        <p>Claude Code reasons about the repo it's sitting in. A clean, committed baseline means every later diff is legible — to you and to Claude.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="phase" id="p1">
+    <div class="phase-head">
+      <span class="phase-num">01</span>
+      <span class="status-pill done">Done</span>
+      <h2 class="phase-title">Foundations: talking to Claude Code well</h2>
+    </div>
+    <p class="phase-sub">The highest-leverage skill is giving Claude the right context before it writes a line — the habits that separate "prompt and pray" from deliberate collaboration.</p>
+    <div class="cards">
+      <div class="card">
+        <p class="label">What happened</p>
+        <ul>
+          <li>Wrote a real <code>CLAUDE.md</code> — conventions, commands, gotchas specific to this repo</li>
+          <li>Used plan mode to design the <code>Task</code> data model and CRUD API before writing any code — plan approved, then implemented</li>
+          <li>Backend: models, in-memory <code>TaskStore</code>, <code>/tasks</code> CRUD routes, 6 passing tests</li>
+        </ul>
+      </div>
+      <div class="card">
+        <p class="label">Concepts exercised</p>
+        <ul>
+          <li>Plan mode vs. auto-accept</li>
+          <li>Scoping asks: small diffs vs. "build the whole feature"</li>
+          <li>Reading and steering the diff, not just approving it</li>
+        </ul>
+      </div>
+    </div>
+    <div class="milestone">
+      <span class="dot"></span>
+      <p><strong>Milestone hit —</strong> a running FastAPI backend and a React shell that lists tasks from it, plus a <code>CLAUDE.md</code> you'd hand to a new teammate.</p>
+    </div>
+  </section>
+
+  <section class="phase" id="p2">
+    <div class="phase-head">
+      <span class="phase-num">02</span>
+      <span class="status-pill done">Done</span>
+      <h2 class="phase-title">The agentic workflow: skills, subagents, hooks</h2>
+    </div>
+    <p class="phase-sub">Where Claude Code stops being "a chatbot with file access" and becomes a configurable system shaped to the project.</p>
+    <div class="cards">
+      <div class="card">
+        <p class="label">What happened</p>
+        <ul>
+          <li>Wrote <code>/new-endpoint</code>, a project skill that scaffolds a route + model + test + optional frontend wrapper together</li>
+          <li>Used it to build the AI-triage endpoint — Claude tool-use call suggests a priority without mutating the task</li>
+          <li>A <code>PostToolUse</code> hook auto-runs <code>ruff</code>/<code>oxlint</code> on every edit — verified live by watching it silently fix an injected bug</li>
+          <li>Permission allowlist narrowed to the dev loop; destructive actions still prompt</li>
+          <li>An Explore subagent traced a field end-to-end across the stack, citing file:line locations independently</li>
+        </ul>
+      </div>
+      <div class="card">
+        <p class="label">Concepts exercised</p>
+        <ul>
+          <li>Custom slash-command skills</li>
+          <li>Hooks: enforcing lint/format automatically</li>
+          <li>Permission modes and narrow allowlists</li>
+          <li>Delegating to a subagent vs. doing it inline</li>
+        </ul>
+      </div>
+    </div>
+    <div class="milestone">
+      <span class="dot"></span>
+      <p><strong>Milestone hit —</strong> the AI-triage endpoint exists, built using a self-authored skill.</p>
+    </div>
+  </section>
+
+  <section class="phase" id="p3">
+    <div class="phase-head">
+      <span class="phase-num">03</span>
+      <span class="status-pill done">Done</span>
+      <h2 class="phase-title">Testing: making Claude prove it, not just claim it</h2>
+    </div>
+    <p class="phase-sub">Claude will tell you something works. This phase is about never taking that on faith.</p>
+    <div class="cards">
+      <div class="card">
+        <p class="label">What happened</p>
+        <ul>
+          <li>Vitest + React Testing Library added to the frontend; API mocked at the boundary, mirroring the backend's mocking pattern</li>
+          <li>A real TDD loop: wrote a failing test for "confirm before delete," watched it fail against the real code, implemented the guard, watched it pass</li>
+          <li>Ran <code>/verify</code> end-to-end in a live browser — found that headless automation auto-accepts native dialogs, a real gap worth knowing</li>
+        </ul>
+      </div>
+      <div class="card">
+        <p class="label">Concepts exercised</p>
+        <ul>
+          <li>TDD: failing test first, then made to pass</li>
+          <li>Testing LLM-backed endpoints by mocking the client</li>
+          <li>The <code>verify</code> skill — driving the real flow, not just green tests</li>
+        </ul>
+      </div>
+    </div>
+    <div class="milestone">
+      <span class="dot"></span>
+      <p><strong>Milestone hit —</strong> backend and frontend both have a real test suite, including a test that deliberately breaks the Claude call to check the fallback path.</p>
+    </div>
+  </section>
+
+  <section class="phase" id="p4">
+    <div class="phase-head">
+      <span class="phase-num">04</span>
+      <span class="status-pill done">Done</span>
+      <h2 class="phase-title">CI/CD: Claude as reviewer, not just author</h2>
+    </div>
+    <p class="phase-sub">Writing code is half the job. This phase wires Claude into the gate that decides whether code merges.</p>
+    <div class="cards">
+      <div class="card">
+        <p class="label">What happened</p>
+        <ul>
+          <li><code>.github/workflows/ci.yml</code> — backend and frontend jobs on every push/PR</li>
+          <li>A real feature, <a href="https://github.com/nickhargreaves/claudepro/pull/1">PR #1</a>, exercised it — CI caught a genuine bug (a missing env var) on first run</li>
+          <li><code>/code-review</code> at medium effort found two confirmed bugs the new feature made more visible; kept out of scope and spawned as a follow-up instead of scope-creeping</li>
+          <li>Branch protection required GitHub Pro on a private repo — made the repo public to unlock it for real, after confirming no secrets were ever committed</li>
+          <li>Enforcement verified for real: a direct push bypassing the PR was rejected by GitHub itself (<code>GH006</code>), routed through <a href="https://github.com/nickhargreaves/claudepro/pull/2">PR #2</a> instead</li>
+        </ul>
+      </div>
+      <div class="card">
+        <p class="label">Concepts exercised</p>
+        <ul>
+          <li>GitHub Actions: lint, test, build on every PR</li>
+          <li><code>/code-review</code> at medium effort</li>
+          <li>Branch protection + required checks so the pipeline isn't advisory</li>
+        </ul>
+      </div>
+    </div>
+    <div class="milestone">
+      <span class="dot"></span>
+      <p><strong>Milestone hit —</strong> no PR reaches <code>main</code> without CI green — verified by watching one actually get blocked, for real.</p>
+    </div>
+  </section>
+
+  <section class="phase" id="p5">
+    <div class="phase-head">
+      <span class="phase-num">05</span>
+      <span class="status-pill next">Next</span>
+      <h2 class="phase-title">Deployment: from laptop to a real URL</h2>
+    </div>
+    <p class="phase-sub">Best practice here is less about Claude-specific tricks and more about having Claude execute deployment discipline you'd want from any engineer: reproducible builds, secrets handled correctly, no surprise prod pushes.</p>
+    <div class="cards">
+      <div class="card">
+        <p class="label">Concepts</p>
+        <ul>
+          <li>Dockerizing the FastAPI service; static build for the TS frontend</li>
+          <li>Secrets management (Claude API key never in the repo or the image)</li>
+          <li>A real target: Fly.io / Render / a VPS — pick one and commit</li>
+          <li>Why Claude should propose the deploy plan and you should approve each risky step</li>
+        </ul>
+      </div>
+      <div class="card">
+        <p class="label">Exercises</p>
+        <ul>
+          <li>Write the Dockerfile and a minimal docker-compose for local parity with prod</li>
+          <li>Wire CD: merge to main → build → deploy, gated on CI passing</li>
+          <li>Do one deploy live and watch Claude narrate risk before each destructive-adjacent step</li>
+        </ul>
+      </div>
+    </div>
+    <div class="milestone">
+      <span class="dot"></span>
+      <p><strong>Milestone —</strong> TaskFlow is live at a real URL, deployed by a pipeline, with the Claude API key injected as a secret, never committed.</p>
+    </div>
+  </section>
+
+  <section class="phase" id="p6">
+    <div class="phase-head">
+      <span class="phase-num">06</span>
+      <span class="status-pill next">Next</span>
+      <h2 class="phase-title">Observability: watching an LLM-backed system in the wild</h2>
+    </div>
+    <p class="phase-sub">Traditional observability plus one new problem: LLM calls fail silently, drift in latency, and cost real money per request.</p>
+    <div class="cards">
+      <div class="card">
+        <p class="label">Concepts</p>
+        <ul>
+          <li>Structured logging (request id, latency, status) on every route</li>
+          <li>Tracing the triage call specifically: prompt version, tokens, latency, cost</li>
+          <li>Alerting on Claude API error rate / latency spikes, not just HTTP 500s</li>
+          <li>Using Claude Code itself to read logs and root-cause a production incident</li>
+        </ul>
+      </div>
+      <div class="card">
+        <p class="label">Exercises</p>
+        <ul>
+          <li>Add structured logging + a minimal dashboard (even just log-based)</li>
+          <li>Instrument the triage endpoint with token/cost/latency metrics</li>
+          <li>Simulate an incident and use Claude Code to diagnose it from logs alone</li>
+        </ul>
+      </div>
+    </div>
+    <div class="milestone">
+      <span class="dot"></span>
+      <p><strong>Milestone —</strong> a dashboard shows triage-call latency and cost over time, and you've used Claude to debug one deliberately-injected incident from logs alone.</p>
+    </div>
+  </section>
+
+  <section class="phase" id="p7">
+    <div class="phase-head">
+      <span class="phase-num">07</span>
+      <span class="status-pill next">Next</span>
+      <h2 class="phase-title">Going further: MCP servers and multi-agent design</h2>
+    </div>
+    <p class="phase-sub">The capstone: build the kind of tool you've been using all along, and use orchestration patterns beyond single-agent chat.</p>
+    <div class="cards">
+      <div class="card">
+        <p class="label">Concepts</p>
+        <ul>
+          <li>Building a small MCP server (e.g. exposing TaskFlow's own API as tools)</li>
+          <li>Claude Agent SDK basics — a custom agent instead of raw API calls</li>
+          <li>Multi-agent orchestration: when parallel subagents actually pay off vs. add noise</li>
+          <li>Where Claude Desktop and Cowork fit vs. Claude Code — same model, different loop</li>
+        </ul>
+      </div>
+      <div class="card">
+        <p class="label">Exercises</p>
+        <ul>
+          <li>Write an MCP server wrapping TaskFlow, connect it in Claude Desktop, manage tasks by chatting</li>
+          <li>Rebuild the triage feature on the Agent SDK instead of a raw API call</li>
+          <li>Retire one manual chore to Cowork or a scheduled agent</li>
+        </ul>
+      </div>
+    </div>
+    <div class="milestone">
+      <span class="dot"></span>
+      <p><strong>Milestone —</strong> manage TaskFlow tasks from Claude Desktop via your own MCP server, and a scheduled agent sends a weekly summary without you asking.</p>
+    </div>
+  </section>
+
+  <div class="matrix-wrap">
+    <table class="matrix">
+      <thead>
+        <tr><th>Phase</th><th>Claude surface</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>00 Setup</td><td>CLI install, repo init</td><td class="status-done">done</td></tr>
+        <tr><td>01 Foundations</td><td>CLAUDE.md, plan mode</td><td class="status-done">done</td></tr>
+        <tr><td>02 Agentic workflow</td><td>Skills, subagents, hooks</td><td class="status-done">done</td></tr>
+        <tr><td>03 Testing</td><td>verify skill, TDD loop</td><td class="status-done">done</td></tr>
+        <tr><td>04 CI/CD</td><td>/code-review, branch protection</td><td class="status-done">done</td></tr>
+        <tr><td>05 Deployment</td><td>Guided deploy, risk narration</td><td class="status-next">next</td></tr>
+        <tr><td>06 Observability</td><td>Log-driven debugging</td><td class="status-next">next</td></tr>
+        <tr><td>07 MCP &amp; agents</td><td>MCP server, Agent SDK, Cowork</td><td class="status-next">next</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer class="note">
+    <p>Each phase's milestone is the gate: don't start the next phase until TaskFlow actually does the thing, not just "the code looks right." Source and live progress tracker: <a href="https://github.com/nickhargreaves/claudepro">github.com/nickhargreaves/claudepro</a>.</p>
+  </footer>
+
+</div>
+</body>
+</html>

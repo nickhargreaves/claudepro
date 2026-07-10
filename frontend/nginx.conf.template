@@ -1,3 +1,12 @@
+# Fly's internal DNS resolver (6PN). A bare `proxy_pass $API_UPSTREAM` below
+# would resolve the hostname once at nginx startup and hard-fail ("host not
+# found in upstream") if the backend happens to be mid-restart at that exact
+# moment — which happens routinely (auto_stop_machines, a CD redeploy race).
+# Routing through a variable forces nginx to re-resolve per request via this
+# resolver instead, so a backend that's temporarily down at boot time isn't
+# a permanent crash.
+resolver [fdaa::3] valid=5s;
+
 server {
     listen 8080;
     root /usr/share/nginx/html;
@@ -7,7 +16,16 @@ server {
     # cross-origin call, so no CORS needed. $API_UPSTREAM is substituted at
     # image build time (see Dockerfile), not at nginx runtime.
     location /api/ {
-        proxy_pass $API_UPSTREAM/;
+        # proxy_pass with a variable target (needed above for per-request
+        # DNS resolution) does NOT do the usual automatic /api/ prefix
+        # stripping that a static proxy_pass does — it forwards the
+        # original request URI unchanged. Strip it explicitly instead.
+        # $upstream must be set BEFORE rewrite ... break — break halts the
+        # rest of the rewrite-phase directive pipeline, so a set after it
+        # never runs ("uninitialized upstream variable").
+        set $upstream $API_UPSTREAM;
+        rewrite ^/api/(.*)$ /$1 break;
+        proxy_pass $upstream;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-Proto $scheme;

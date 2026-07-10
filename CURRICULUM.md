@@ -79,7 +79,7 @@ phase has a `phase-0N-done` git tag and a step-by-step lesson in
 - `.github/workflows/ci.yml`: two jobs, `backend` (ruff + pytest) and
   `frontend` (oxlint + vitest + build), on every push/PR to `main`
 - Real feature on a branch to exercise it: task-count summary line in the
-  header, opened as [PR #1](https://github.com/nickhargreaves/claudepro/pull/1)
+  header, opened as [PR #1](https://github.com/nickhargreaves/ClaudePowerUser/pull/1)
 - CI caught a genuine bug on first run: `pydantic-settings` requires
   `ANTHROPIC_API_KEY` at import time, which CI didn't have — fixed with a
   non-secret placeholder value (tests mock every real Claude call, so no

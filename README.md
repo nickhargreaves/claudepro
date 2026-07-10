@@ -7,7 +7,7 @@ expert level: coding, agentic workflows, testing, CI/CD, deployment, and
 observability.
 
 **Full curriculum, phase-by-phase, with live progress:**
-**[nickhargreaves.github.io/claudepro](https://nickhargreaves.github.io/claudepro/)**
+**[nickhargreaves.github.io/ClaudePowerUser](https://nickhargreaves.github.io/ClaudePowerUser/)**
 
 For the raw status checklist, see [CURRICULUM.md](CURRICULUM.md).
 

@@ -4,6 +4,10 @@ Live tracker for the seven-phase plan. Full rationale, concepts, and
 exercises for each phase are in [README.md](README.md) — this file just
 tracks progress.
 
+Want to do this yourself instead of just reading about it? Each completed
+phase has a `phase-0N-done` git tag and a step-by-step lesson in
+[docs/lessons/](docs/lessons/README.md).
+
 ## Status
 
 - [x] 00 — Setup
@@ -75,7 +79,7 @@ tracks progress.
 - `.github/workflows/ci.yml`: two jobs, `backend` (ruff + pytest) and
   `frontend` (oxlint + vitest + build), on every push/PR to `main`
 - Real feature on a branch to exercise it: task-count summary line in the
-  header, opened as [PR #1](https://github.com/nickhargreaves/claudepro/pull/1)
+  header, opened as [PR #1](https://github.com/nickhargreaves/ClaudePowerUser/pull/1)
 - CI caught a genuine bug on first run: `pydantic-settings` requires
   `ANTHROPIC_API_KEY` at import time, which CI didn't have — fixed with a
   non-secret placeholder value (tests mock every real Claude call, so no

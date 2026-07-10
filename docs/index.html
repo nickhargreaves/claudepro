@@ -225,7 +225,20 @@
     text-wrap: balance;
     grid-column: 1 / -1;
   }
-  .phase-sub { color: var(--ink-soft); font-size: 0.95rem; margin: 0 0 1.3rem; max-width: 68ch; }
+  .phase-sub { color: var(--ink-soft); font-size: 0.95rem; margin: 0 0 1rem; max-width: 68ch; }
+
+  .lesson-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 0.8rem;
+    color: var(--teal);
+    text-decoration: none;
+    margin-bottom: 1.3rem;
+    border-bottom: 1px solid transparent;
+  }
+  .lesson-link:hover, .lesson-link:focus-visible { border-bottom-color: var(--teal); }
 
   .cards {
     display: grid;
@@ -327,7 +340,7 @@
       <span class="tag">Docker</span>
       <span class="tag">Claude Agent SDK</span>
     </div>
-    <a class="repo-link" href="https://github.com/nickhargreaves/claudepro">github.com/nickhargreaves/claudepro &rarr;</a>
+    <a class="repo-link" href="https://github.com/nickhargreaves/ClaudePowerUser">github.com/nickhargreaves/ClaudePowerUser &rarr;</a>
   </header>
 
   <div class="project-brief">
@@ -358,6 +371,7 @@
       <h2 class="phase-title">Setup — one honest hour</h2>
     </div>
     <p class="phase-sub">Before any lesson: get the repo, the CLI, and terminal habits in order so later phases aren't fighting the environment.</p>
+    <a class="lesson-link" href="https://github.com/nickhargreaves/ClaudePowerUser/blob/main/docs/lessons/00-setup.md">Follow this phase yourself &rarr;</a>
     <div class="cards">
       <div class="card">
         <p class="label">What happened</p>
@@ -382,6 +396,7 @@
       <h2 class="phase-title">Foundations: talking to Claude Code well</h2>
     </div>
     <p class="phase-sub">The highest-leverage skill is giving Claude the right context before it writes a line — the habits that separate "prompt and pray" from deliberate collaboration.</p>
+    <a class="lesson-link" href="https://github.com/nickhargreaves/ClaudePowerUser/blob/main/docs/lessons/01-foundations.md">Follow this phase yourself &rarr;</a>
     <div class="cards">
       <div class="card">
         <p class="label">What happened</p>
@@ -413,6 +428,7 @@
       <h2 class="phase-title">The agentic workflow: skills, subagents, hooks</h2>
     </div>
     <p class="phase-sub">Where Claude Code stops being "a chatbot with file access" and becomes a configurable system shaped to the project.</p>
+    <a class="lesson-link" href="https://github.com/nickhargreaves/ClaudePowerUser/blob/main/docs/lessons/02-agentic-workflow.md">Follow this phase yourself &rarr;</a>
     <div class="cards">
       <div class="card">
         <p class="label">What happened</p>
@@ -447,6 +463,7 @@
       <h2 class="phase-title">Testing: making Claude prove it, not just claim it</h2>
     </div>
     <p class="phase-sub">Claude will tell you something works. This phase is about never taking that on faith.</p>
+    <a class="lesson-link" href="https://github.com/nickhargreaves/ClaudePowerUser/blob/main/docs/lessons/03-testing.md">Follow this phase yourself &rarr;</a>
     <div class="cards">
       <div class="card">
         <p class="label">What happened</p>
@@ -478,15 +495,16 @@
       <h2 class="phase-title">CI/CD: Claude as reviewer, not just author</h2>
     </div>
     <p class="phase-sub">Writing code is half the job. This phase wires Claude into the gate that decides whether code merges.</p>
+    <a class="lesson-link" href="https://github.com/nickhargreaves/ClaudePowerUser/blob/main/docs/lessons/04-ci-cd.md">Follow this phase yourself &rarr;</a>
     <div class="cards">
       <div class="card">
         <p class="label">What happened</p>
         <ul>
           <li><code>.github/workflows/ci.yml</code> — backend and frontend jobs on every push/PR</li>
-          <li>A real feature, <a href="https://github.com/nickhargreaves/claudepro/pull/1">PR #1</a>, exercised it — CI caught a genuine bug (a missing env var) on first run</li>
+          <li>A real feature, <a href="https://github.com/nickhargreaves/ClaudePowerUser/pull/1">PR #1</a>, exercised it — CI caught a genuine bug (a missing env var) on first run</li>
           <li><code>/code-review</code> at medium effort found two confirmed bugs the new feature made more visible; kept out of scope and spawned as a follow-up instead of scope-creeping</li>
           <li>Branch protection required GitHub Pro on a private repo — made the repo public to unlock it for real, after confirming no secrets were ever committed</li>
-          <li>Enforcement verified for real: a direct push bypassing the PR was rejected by GitHub itself (<code>GH006</code>), routed through <a href="https://github.com/nickhargreaves/claudepro/pull/2">PR #2</a> instead</li>
+          <li>Enforcement verified for real: a direct push bypassing the PR was rejected by GitHub itself (<code>GH006</code>), routed through <a href="https://github.com/nickhargreaves/ClaudePowerUser/pull/2">PR #2</a> instead</li>
         </ul>
       </div>
       <div class="card">
@@ -511,6 +529,7 @@
       <h2 class="phase-title">Deployment: from laptop to a real URL</h2>
     </div>
     <p class="phase-sub">Best practice here is less about Claude-specific tricks and more about having Claude execute deployment discipline you'd want from any engineer: reproducible builds, secrets handled correctly, no surprise prod pushes.</p>
+    <a class="lesson-link" href="https://github.com/nickhargreaves/ClaudePowerUser/blob/main/docs/lessons/05-deployment.md">Follow this phase yourself &rarr;</a>
     <div class="cards">
       <div class="card">
         <p class="label">Concepts</p>
@@ -543,6 +562,7 @@
       <h2 class="phase-title">Observability: watching an LLM-backed system in the wild</h2>
     </div>
     <p class="phase-sub">Traditional observability plus one new problem: LLM calls fail silently, drift in latency, and cost real money per request.</p>
+    <a class="lesson-link" href="https://github.com/nickhargreaves/ClaudePowerUser/blob/main/docs/lessons/06-observability.md">Follow this phase yourself &rarr;</a>
     <div class="cards">
       <div class="card">
         <p class="label">Concepts</p>
@@ -575,6 +595,7 @@
       <h2 class="phase-title">Going further: MCP servers and multi-agent design</h2>
     </div>
     <p class="phase-sub">The capstone: build the kind of tool you've been using all along, and use orchestration patterns beyond single-agent chat.</p>
+    <a class="lesson-link" href="https://github.com/nickhargreaves/ClaudePowerUser/blob/main/docs/lessons/07-mcp-agents.md">Follow this phase yourself &rarr;</a>
     <div class="cards">
       <div class="card">
         <p class="label">Concepts</p>
@@ -619,7 +640,7 @@
   </div>
 
   <footer class="note">
-    <p>Each phase's milestone is the gate: don't start the next phase until TaskFlow actually does the thing, not just "the code looks right." Source and live progress tracker: <a href="https://github.com/nickhargreaves/claudepro">github.com/nickhargreaves/claudepro</a>.</p>
+    <p>Each phase's milestone is the gate: don't start the next phase until TaskFlow actually does the thing, not just "the code looks right." Source and live progress tracker: <a href="https://github.com/nickhargreaves/ClaudePowerUser">github.com/nickhargreaves/ClaudePowerUser</a>.</p>
   </footer>
 
 </div>

@@ -12,4 +12,8 @@ RUN uv sync --no-dev
 
 EXPOSE 8080
 
-CMD ["uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
+# "::" (not "0.0.0.0") — Fly's public edge reaches this fine either way, but
+# Fly's private 6PN network (used by the frontend's nginx reverse proxy) is
+# IPv6-only, and Linux's IPv6 wildcard also accepts IPv4-mapped connections
+# by default, so this is the one binding that satisfies both.
+CMD ["uv", "run", "uvicorn", "app.main:app", "--host", "::", "--port", "8080"]

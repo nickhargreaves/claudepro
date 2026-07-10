@@ -1,0 +1,20 @@
+app = "taskflow-nh-api"
+primary_region = "iad"
+
+[build]
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  # The frontend's nginx reaches this app over Fly's private network
+  # (taskflow-nh-api.internal), which connects directly to a machine's
+  # private IP and does NOT trigger Fly's wake-on-request the way the
+  # public edge does — a stopped machine just refuses the connection. Keep
+  # one warm so the internal proxy path is always reachable.
+  min_machines_running = 1
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"

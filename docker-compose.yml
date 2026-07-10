@@ -1,0 +1,20 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8080"
+    env_file:
+      - backend/.env
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # "backend" resolves via Docker Compose's internal network DNS —
+        # not localhost, which wouldn't be reachable from inside this
+        # container's own network namespace.
+        API_UPSTREAM: http://backend:8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      - backend

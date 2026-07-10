@@ -1,0 +1,19 @@
+server {
+    listen 8080;
+    root /usr/share/nginx/html;
+    index index.html;
+
+    # Reverse-proxied server-to-server — never exposed to the browser as a
+    # cross-origin call, so no CORS needed. $API_UPSTREAM is substituted at
+    # image build time (see Dockerfile), not at nginx runtime.
+    location /api/ {
+        proxy_pass $API_UPSTREAM/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}

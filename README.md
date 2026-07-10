@@ -9,6 +9,8 @@ observability.
 **Full curriculum, phase-by-phase, with live progress:**
 **[nickhargreaves.github.io/ClaudePowerUser](https://nickhargreaves.github.io/ClaudePowerUser/)**
 
+**Live app:** **[taskflow-nh-web.fly.dev](https://taskflow-nh-web.fly.dev)**
+
 For the raw status checklist, see [CURRICULUM.md](CURRICULUM.md).
 
 ## Follow along yourself

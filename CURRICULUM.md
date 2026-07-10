@@ -15,7 +15,7 @@ phase has a `phase-0N-done` git tag and a step-by-step lesson in
 - [x] 02 — Agentic workflow (skills, subagents, hooks)
 - [x] 03 — Testing (pytest, Vitest, verify skill)
 - [x] 04 — CI/CD (GitHub Actions, code-review, ultrareview)
-- [ ] 05 — Deployment (Docker, secrets, real deploy target)
+- [x] 05 — Deployment (Docker, secrets, real deploy target)
 - [ ] 06 — Observability (structured logging, LLM call tracing)
 - [ ] 07 — MCP & agents (own MCP server, Agent SDK, Cowork)
 
@@ -98,8 +98,51 @@ phase has a `phase-0N-done` git tag and a step-by-step lesson in
   first; declined to override it and merged through the normal PR flow
   instead (`gh pr merge --squash`) — PR #1 is merged, `main` has the change
 
-## Phase 05 — Deployment (next)
+## Phase 05 — Deployment
 
-Goal: Dockerize the FastAPI service and build the frontend statically,
-secrets management for the deploy target, CD gated on CI passing, and a
-guided live deploy with risk narrated before each step.
+- Two Fly.io apps: `taskflow-nh-api` (FastAPI, Dockerized with `uv`) and
+  `taskflow-nh-web` (Vite build served by nginx). Live at
+  [taskflow-nh-web.fly.dev](https://taskflow-nh-web.fly.dev)
+- Architecture: nginx reverse-proxies `/api/*` to the backend server-to-server
+  over Fly's private network — no CORS, and the frontend calls `/api/*`
+  identically in dev and prod, matching `CLAUDE.md`'s existing convention.
+  An earlier build-time-URL design was reverted after `/code-review`
+  flagged it as a convention violation with unconfigured production CORS
+- `docker-compose.yml` for local parity; CD (`deploy.yml`) triggers on
+  merge to `main`, using two app-scoped Fly tokens (not one org-wide token
+  — a broader-scope token was proposed mid-build and correctly blocked
+  pending explicit approval)
+- `/code-review` caught two real deploy-breaking bugs before they shipped
+  (a config path bug that would fail every backend deploy, an unnecessary
+  job dependency serializing two independent deploys) — both fixed pre-merge
+- The guided live deploy surfaced three more real, non-hypothetical bugs
+  only visible once actually running on Fly, each found by reading the
+  actual error and fixed in turn:
+  - `uvicorn --host 0.0.0.0` is IPv4-only; Fly's private network is
+    IPv6-only, so the backend was unreachable from the internal proxy
+    despite working fine on the public internet — fixed by binding `::`
+  - nginx's `nginx:alpine` base image re-runs `envsubst` on anything left
+    in `/etc/nginx/templates/` *again* at container startup, on top of the
+    build-time substitution already done — crashed nginx on boot. Fixed by
+    keeping the template outside that directory
+  - A stopped backend machine caused nginx to hard-fail at startup (static
+    `proxy_pass` resolves its hostname once at boot) — fixed with dynamic
+    per-request DNS resolution via Fly's internal resolver, which then
+    surfaced two more nginx-specific bugs (a variable-based `proxy_pass`
+    skips automatic prefix stripping; `rewrite ... break` halts the
+    rewrite-phase pipeline, so directive order mattered) — all found by
+    redeploying and reading the real error, not by guessing
+  - One dead Fly host under a machine was also hit (infra flakiness, not
+    application code) — resolved by destroying that machine and confirming
+    Fly recreated it healthy
+- Verified live, repeatedly, after a real backend restart: `/api/health`
+  and `/api/tasks` both return correct data through the deployed proxy,
+  and the site itself stays up (graceful 502, not a crash-loop) when the
+  backend is temporarily down
+
+## Phase 06 — Observability (next)
+
+Goal: structured logging on every route, tracing the triage call's
+tokens/latency/cost specifically, alerting on Claude API error rate (not
+just HTTP 500s), and using Claude Code itself to root-cause a deliberately
+simulated incident from logs alone.

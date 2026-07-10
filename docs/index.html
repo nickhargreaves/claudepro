@@ -139,7 +139,7 @@
   }
   .progress-bar-fill {
     height: 100%;
-    width: 57%;
+    width: 71%;
     background: var(--teal);
     border-radius: 999px;
   }
@@ -349,7 +349,7 @@
   </div>
 
   <div class="progress">
-    <span class="progress-label">4 / 7 phases done</span>
+    <span class="progress-label">5 / 7 phases done</span>
     <span class="progress-bar"><span class="progress-bar-fill"></span></span>
   </div>
 
@@ -359,7 +359,7 @@
     <a href="#p2" class="done"><span><span class="n">02</span>Agentic workflow</span><span class="dot"></span></a>
     <a href="#p3" class="done"><span><span class="n">03</span>Testing</span><span class="dot"></span></a>
     <a href="#p4" class="done"><span><span class="n">04</span>CI/CD</span><span class="dot"></span></a>
-    <a href="#p5"><span><span class="n">05</span>Deployment</span><span class="dot"></span></a>
+    <a href="#p5" class="done"><span><span class="n">05</span>Deployment</span><span class="dot"></span></a>
     <a href="#p6"><span><span class="n">06</span>Observability</span><span class="dot"></span></a>
     <a href="#p7"><span><span class="n">07</span>MCP &amp; agents</span><span class="dot"></span></a>
   </nav>
@@ -525,33 +525,34 @@
   <section class="phase" id="p5">
     <div class="phase-head">
       <span class="phase-num">05</span>
-      <span class="status-pill next">Next</span>
+      <span class="status-pill done">Done</span>
       <h2 class="phase-title">Deployment: from laptop to a real URL</h2>
     </div>
     <p class="phase-sub">Best practice here is less about Claude-specific tricks and more about having Claude execute deployment discipline you'd want from any engineer: reproducible builds, secrets handled correctly, no surprise prod pushes.</p>
     <a class="lesson-link" href="https://github.com/nickhargreaves/ClaudePowerUser/blob/main/docs/lessons/05-deployment.md">Follow this phase yourself &rarr;</a>
     <div class="cards">
       <div class="card">
-        <p class="label">Concepts</p>
+        <p class="label">What happened</p>
         <ul>
-          <li>Dockerizing the FastAPI service; static build for the TS frontend</li>
-          <li>Secrets management (Claude API key never in the repo or the image)</li>
-          <li>A real target: Fly.io / Render / a VPS — pick one and commit</li>
-          <li>Why Claude should propose the deploy plan and you should approve each risky step</li>
+          <li>Two Fly.io apps — <code>taskflow-nh-api</code> (FastAPI/uv) and <code>taskflow-nh-web</code> (Vite build + nginx) — live at <a href="https://taskflow-nh-web.fly.dev">taskflow-nh-web.fly.dev</a></li>
+          <li>nginx reverse-proxies <code>/api/*</code> to the backend server-to-server over Fly's private network — no CORS, and <code>/api/*</code> behaves identically in dev and prod</li>
+          <li><code>docker-compose.yml</code> for local parity; CD triggers automatically on merge to <code>main</code></li>
+          <li><code>/code-review</code> caught two real deploy-breaking bugs before they shipped (a config path bug, an unnecessary job dependency serializing two independent deploys)</li>
+          <li>The guided live deploy then surfaced three more real bugs only visible once actually running — an IPv4-only bind on an IPv6-only private network, nginx's own template auto-substitution colliding with a build-time one, and a static DNS resolution that crashed nginx if the backend was mid-restart — each found by reading the actual error and fixed in turn, verified live afterward</li>
         </ul>
       </div>
       <div class="card">
-        <p class="label">Exercises</p>
+        <p class="label">Concepts exercised</p>
         <ul>
-          <li>Write the Dockerfile and a minimal docker-compose for local parity with prod</li>
-          <li>Wire CD: merge to main → build → deploy, gated on CI passing</li>
-          <li>Do one deploy live and watch Claude narrate risk before each destructive-adjacent step</li>
+          <li>Dockerizing a FastAPI service and a static frontend build</li>
+          <li>Secrets via Fly (never in the repo or the image) and two least-privilege deploy tokens instead of one broad one</li>
+          <li>Claude proposing risky infra changes and narrating them before acting — a proposed org-wide token and a direct machine scale were both paused for explicit approval</li>
         </ul>
       </div>
     </div>
     <div class="milestone">
       <span class="dot"></span>
-      <p><strong>Milestone —</strong> TaskFlow is live at a real URL, deployed by a pipeline, with the Claude API key injected as a secret, never committed.</p>
+      <p><strong>Milestone hit —</strong> the app is live at a real URL, deployed by a pipeline, verified working through a real backend restart — not just "the deploy succeeded."</p>
     </div>
   </section>
 
@@ -632,7 +633,7 @@
         <tr><td>02 Agentic workflow</td><td>Skills, subagents, hooks</td><td class="status-done">done</td></tr>
         <tr><td>03 Testing</td><td>verify skill, TDD loop</td><td class="status-done">done</td></tr>
         <tr><td>04 CI/CD</td><td>/code-review, branch protection</td><td class="status-done">done</td></tr>
-        <tr><td>05 Deployment</td><td>Guided deploy, risk narration</td><td class="status-next">next</td></tr>
+        <tr><td>05 Deployment</td><td>Guided deploy, risk narration</td><td class="status-done">done</td></tr>
         <tr><td>06 Observability</td><td>Log-driven debugging</td><td class="status-next">next</td></tr>
         <tr><td>07 MCP &amp; agents</td><td>MCP server, Agent SDK, Cowork</td><td class="status-next">next</td></tr>
       </tbody>

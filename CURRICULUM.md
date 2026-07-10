@@ -4,6 +4,10 @@ Live tracker for the seven-phase plan. Full rationale, concepts, and
 exercises for each phase are in [README.md](README.md) — this file just
 tracks progress.
 
+Want to do this yourself instead of just reading about it? Each completed
+phase has a `phase-0N-done` git tag and a step-by-step lesson in
+[docs/lessons/](docs/lessons/README.md).
+
 ## Status
 
 - [x] 00 — Setup

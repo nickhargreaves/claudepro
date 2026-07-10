@@ -11,6 +11,12 @@ observability.
 
 For the raw status checklist, see [CURRICULUM.md](CURRICULUM.md).
 
+## Follow along yourself
+
+This isn't just a writeup — it's meant to be forked and done. Each phase
+has a tagged reference commit and a step-by-step lesson:
+**[docs/lessons/](docs/lessons/README.md)**.
+
 ## The project
 
 TaskFlow uses the Claude API itself — to triage new tasks — which gives the

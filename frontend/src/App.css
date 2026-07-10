@@ -26,6 +26,11 @@
   font-size: 0.9rem;
 }
 
+.task-error {
+  color: #a03e3e;
+  font-size: 0.9rem;
+}
+
 .add-task {
   display: flex;
   gap: 0.5rem;

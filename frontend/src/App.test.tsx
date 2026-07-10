@@ -61,6 +61,60 @@ describe('App', () => {
     expect(screen.queryByText(/done$/)).not.toBeInTheDocument()
   })
 
+  it('shows an error message instead of clearing the list when a refresh fails', async () => {
+    const user = userEvent.setup()
+    mockedApi.listTasks.mockResolvedValueOnce([makeTask({ title: 'Write CLAUDE.md' })])
+    mockedApi.updateTask.mockResolvedValue(makeTask({ status: 'doing' }))
+
+    render(<App />)
+    await screen.findByText('Write CLAUDE.md')
+
+    mockedApi.listTasks.mockRejectedValueOnce(new Error('network error'))
+    await user.selectOptions(screen.getByRole('combobox'), 'doing')
+
+    expect(await screen.findByText("Couldn't load tasks — try refreshing.")).toBeInTheDocument()
+    // The stale-but-real task list is preserved rather than being wiped to empty.
+    expect(screen.getByText('Write CLAUDE.md')).toBeInTheDocument()
+    expect(screen.queryByText('No tasks yet.')).not.toBeInTheDocument()
+  })
+
+  it('ignores an out-of-order stale response so it cannot clobber fresher state', async () => {
+    const user = userEvent.setup()
+    const staleTask = makeTask({ id: 'stale', title: 'Stale task' })
+    const freshTask = makeTask({ id: 'fresh', title: 'Fresh task' })
+
+    let resolveFirst: (tasks: Task[]) => void = () => {}
+    let resolveSecond: (tasks: Task[]) => void = () => {}
+    const firstCall = new Promise<Task[]>((resolve) => {
+      resolveFirst = resolve
+    })
+    const secondCall = new Promise<Task[]>((resolve) => {
+      resolveSecond = resolve
+    })
+
+    mockedApi.listTasks
+      .mockImplementationOnce(() => firstCall) // initial mount call
+      .mockImplementationOnce(() => secondCall) // triggered by handleAddTask
+    mockedApi.createTask.mockResolvedValue(freshTask)
+
+    render(<App />)
+    await waitFor(() => expect(mockedApi.listTasks).toHaveBeenCalledTimes(1))
+
+    await user.type(screen.getByPlaceholderText('New task title'), 'Fresh task')
+    await user.click(screen.getByRole('button', { name: 'Add' }))
+    await waitFor(() => expect(mockedApi.listTasks).toHaveBeenCalledTimes(2))
+
+    // Second (fresher) request resolves before the first (stale) request.
+    resolveSecond([freshTask])
+    await screen.findByText('Fresh task')
+
+    resolveFirst([staleTask])
+    await waitFor(() => expect(mockedApi.listTasks).toHaveBeenCalledTimes(2))
+
+    expect(screen.queryByText('Stale task')).not.toBeInTheDocument()
+    expect(screen.getByText('Fresh task')).toBeInTheDocument()
+  })
+
   it('shows unreachable when the health check fails', async () => {
     globalThis.fetch = vi.fn().mockResolvedValue({ ok: false, status: 500 }) as unknown as typeof fetch
 

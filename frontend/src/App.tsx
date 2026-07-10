@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import { createTask, deleteTask, listTasks, triageTask, updateTask } from './api'
 import type { Task, TaskStatus, TriageSuggestion } from './types'
@@ -8,8 +8,10 @@ type HealthStatus = 'checking' | 'ok' | 'unreachable'
 function App() {
   const [health, setHealth] = useState<HealthStatus>('checking')
   const [tasks, setTasks] = useState<Task[]>([])
+  const [tasksError, setTasksError] = useState(false)
   const [title, setTitle] = useState('')
   const [suggestions, setSuggestions] = useState<Record<string, TriageSuggestion | 'loading' | 'error'>>({})
+  const latestRequestId = useRef(0)
 
   useEffect(() => {
     fetch('/api/health')
@@ -21,7 +23,17 @@ function App() {
   }, [])
 
   function refreshTasks() {
-    listTasks().then(setTasks).catch(() => setTasks([]))
+    const requestId = ++latestRequestId.current
+    listTasks()
+      .then((result) => {
+        if (requestId !== latestRequestId.current) return
+        setTasks(result)
+        setTasksError(false)
+      })
+      .catch(() => {
+        if (requestId !== latestRequestId.current) return
+        setTasksError(true)
+      })
   }
 
   async function handleAddTask(event: React.FormEvent) {
@@ -59,7 +71,8 @@ function App() {
       <p>
         Backend status: <strong className={`status status-${health}`}>{health}</strong>
       </p>
-      {tasks.length > 0 && (
+      {tasksError && <p className="task-error">Couldn't load tasks — try refreshing.</p>}
+      {!tasksError && tasks.length > 0 && (
         <p className="task-summary">
           {tasks.length} {tasks.length === 1 ? 'task' : 'tasks'},{' '}
           {tasks.filter((t) => t.status === 'done').length} done

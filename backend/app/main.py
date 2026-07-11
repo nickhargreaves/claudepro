@@ -2,9 +2,12 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
+from app.logging_config import add_request_logging, configure_logging
 from app.models import Task, TaskCreate, TaskUpdate, TriageSuggestion
 from app.store import store
 from app.triage import suggest_priority
+
+configure_logging()
 
 app = FastAPI(title="TaskFlow API")
 
@@ -14,6 +17,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+add_request_logging(app)
 
 
 @app.get("/health")

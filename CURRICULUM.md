@@ -140,9 +140,38 @@ phase has a `phase-0N-done` git tag and a step-by-step lesson in
   and the site itself stays up (graceful 502, not a crash-loop) when the
   backend is temporarily down
 
-## Phase 06 — Observability (next)
+## Phase 06 — Observability (in progress — blocked on Fly billing)
 
-Goal: structured logging on every route, tracing the triage call's
-tokens/latency/cost specifically, alerting on Claude API error rate (not
-just HTTP 500s), and using Claude Code itself to root-cause a deliberately
-simulated incident from logs alone.
+- Structured JSON logging on every request (`request_id`, `method`, `path`,
+  `status_code`, `latency_ms`) via a FastAPI middleware
+- The triage call is traced specifically: latency, token usage, estimated
+  cost, logged on both success and failure — verified live locally against
+  a real (failing, no billing on the Anthropic side) Claude call
+- `scripts/triage_metrics.py` — a log-based "dashboard": parses
+  `triage_call` events from `flyctl logs` (or a local file) into an
+  aggregate summary, deliberately no hosted service
+- `scripts/check_triage_health.py` — simulated alerting: a threshold check
+  on error rate / p95 latency, wired into a scheduled workflow so a breach
+  is a visible failed run, deliberately no webhook
+- Ran `/code-review` (medium effort) before committing and fixed 6 real
+  bugs it found in this new code, each independently verified: a request
+  middleware that silently skipped logging on unhandled exceptions (the
+  500s most worth tracing), an alerting script whose infra failures and
+  real alerts were indistinguishable by exit code, a log line that could
+  record `status="ok"` before validating the model's output, a log parser
+  that silently dropped everything after one malformed chunk, an off-by-one
+  in the p95 calculation that reported the max instead, and duplicated CLI
+  logic across the two scripts
+- **Blocked, honestly:** merging this to `main` triggers CD, which failed
+  on both apps — Fly's free trial ended and now requires a credit card on
+  the account. This needs the user's own action (adding payment details is
+  not something to hand to Claude); deferred rather than worked around.
+  The code itself is fully merged, tested, and verified locally — what's
+  outstanding is the live deploy and the milestone's live-incident-simulation
+  exercise, which needs the deployed version to actually run against
+
+## Phase 07 — MCP & agents (next)
+
+Goal: build a small MCP server exposing TaskFlow's own API as tools,
+connect it in Claude Desktop, rebuild the triage feature on the Claude
+Agent SDK, and retire one manual chore to a scheduled agent or Cowork.

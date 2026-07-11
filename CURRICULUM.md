@@ -164,11 +164,16 @@ phase has a `phase-0N-done` git tag and a step-by-step lesson in
   logic across the two scripts
 - **Blocked, honestly:** merging this to `main` triggers CD, which failed
   on both apps — Fly's free trial ended and now requires a credit card on
-  the account. This needs the user's own action (adding payment details is
-  not something to hand to Claude); deferred rather than worked around.
-  The code itself is fully merged, tested, and verified locally — what's
-  outstanding is the live deploy and the milestone's live-incident-simulation
-  exercise, which needs the deployed version to actually run against
+  the account. This turned out to affect more than new deploys: the
+  already-running apps stopped being reachable too (`taskflow-nh-web.fly.dev`
+  and the API both return connection failures, and `flyctl status` itself
+  errors with "trial has ended" — the trial ending suspended the running
+  machines, not just the ability to update them). This needs the user's
+  own action (adding payment details is not something to hand to Claude);
+  deferred rather than worked around. The code itself is fully merged,
+  tested, and verified locally — what's outstanding is getting the apps
+  running again and the milestone's live-incident-simulation exercise,
+  which needs a reachable deployment to run against
 
 ## Phase 07 — MCP & agents (next)
 

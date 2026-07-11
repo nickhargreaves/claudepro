@@ -10,6 +10,8 @@ observability.
 **[nickhargreaves.github.io/ClaudePowerUser](https://nickhargreaves.github.io/ClaudePowerUser/)**
 
 **Live app:** **[taskflow-nh-web.fly.dev](https://taskflow-nh-web.fly.dev)**
+(currently down — Fly's free trial ended and the account needs a credit
+card before the apps can run again; see [CURRICULUM.md](CURRICULUM.md#phase-06--observability-in-progress--blocked-on-fly-billing))
 
 For the raw status checklist, see [CURRICULUM.md](CURRICULUM.md).
 

@@ -139,7 +139,7 @@
   }
   .progress-bar-fill {
     height: 100%;
-    width: 71%;
+    width: 100%;
     background: var(--teal);
     border-radius: 999px;
   }
@@ -338,7 +338,8 @@
       <span class="tag">pytest / vitest</span>
       <span class="tag">GitHub Actions</span>
       <span class="tag">Docker</span>
-      <span class="tag">Claude Agent SDK</span>
+      <span class="tag">Claude API Tool Runner</span>
+      <span class="tag">MCP</span>
     </div>
     <a class="repo-link" href="https://github.com/nickhargreaves/ClaudePowerUser">github.com/nickhargreaves/ClaudePowerUser &rarr;</a>
   </header>
@@ -349,7 +350,7 @@
   </div>
 
   <div class="progress">
-    <span class="progress-label">5 / 7 phases done</span>
+    <span class="progress-label">7 / 7 phases done</span>
     <span class="progress-bar"><span class="progress-bar-fill"></span></span>
   </div>
 
@@ -360,8 +361,8 @@
     <a href="#p3" class="done"><span><span class="n">03</span>Testing</span><span class="dot"></span></a>
     <a href="#p4" class="done"><span><span class="n">04</span>CI/CD</span><span class="dot"></span></a>
     <a href="#p5" class="done"><span><span class="n">05</span>Deployment</span><span class="dot"></span></a>
-    <a href="#p6"><span><span class="n">06</span>Observability</span><span class="dot"></span></a>
-    <a href="#p7"><span><span class="n">07</span>MCP &amp; agents</span><span class="dot"></span></a>
+    <a href="#p6" class="done"><span><span class="n">06</span>Observability</span><span class="dot"></span></a>
+    <a href="#p7" class="done"><span><span class="n">07</span>MCP &amp; agents</span><span class="dot"></span></a>
   </nav>
 
   <section class="phase" id="p0">
@@ -559,66 +560,62 @@
   <section class="phase" id="p6">
     <div class="phase-head">
       <span class="phase-num">06</span>
-      <span class="status-pill next">Next</span>
+      <span class="status-pill done">Done</span>
       <h2 class="phase-title">Observability: watching an LLM-backed system in the wild</h2>
     </div>
     <p class="phase-sub">Traditional observability plus one new problem: LLM calls fail silently, drift in latency, and cost real money per request.</p>
     <a class="lesson-link" href="https://github.com/nickhargreaves/ClaudePowerUser/blob/main/docs/lessons/06-observability.md">Follow this phase yourself &rarr;</a>
     <div class="cards">
       <div class="card">
-        <p class="label">Concepts</p>
+        <p class="label">What happened</p>
         <ul>
-          <li>Structured logging (request id, latency, status) on every route</li>
-          <li>Tracing the triage call specifically: prompt version, tokens, latency, cost</li>
-          <li>Alerting on Claude API error rate / latency spikes, not just HTTP 500s</li>
-          <li>Using Claude Code itself to read logs and root-cause a production incident</li>
+          <li>Structured JSON logging on every request (request id, latency, status) via a FastAPI middleware</li>
+          <li>The triage call traced specifically — tokens, latency, estimated cost, logged on both success and failure</li>
+          <li>A log-based "dashboard" and a simulated alerting script, both reading <code>flyctl logs</code> directly — deliberately no hosted service, no webhook</li>
+          <li><code>/code-review</code> found six real bugs before any of it shipped, including a log line that could record <code>status="ok"</code> before the model's output was actually validated</li>
         </ul>
       </div>
       <div class="card">
-        <p class="label">Exercises</p>
+        <p class="label">What broke, and what happened instead</p>
         <ul>
-          <li>Add structured logging + a minimal dashboard (even just log-based)</li>
-          <li>Instrument the triage endpoint with token/cost/latency metrics</li>
-          <li>Simulate an incident and use Claude Code to diagnose it from logs alone</li>
+          <li>Fly's free trial ended mid-phase, taking down the already-running apps — a billing action left for the human to take, not routed around</li>
+          <li><code>docker compose up</code> was tried as a cloud-free alternative and genuinely failed too (Docker Desktop's VM wouldn't boot in this sandboxed environment) — abandoned after a real observed failure, not more retries</li>
+          <li>The live incident simulation still happened, just against local dev servers: a real invalid API key was swapped in, three genuine 502s generated, and the dashboard + alerting scripts run cold against the resulting logs — the alert correctly fired at a 100% error rate</li>
+          <li>Root-causing past the alert surfaced a real, previously-unknown gap: the triage log recorded <em>that</em> a call failed but never <em>why</em> — no exception type or message</li>
         </ul>
       </div>
     </div>
     <div class="milestone">
       <span class="dot"></span>
-      <p><strong>Milestone —</strong> a dashboard shows triage-call latency and cost over time, and you've used Claude to debug one deliberately-injected incident from logs alone.</p>
+      <p><strong>Milestone hit —</strong> the dashboard and alerting scripts correctly diagnosed a real, deliberately-injected incident from logs alone — verified live, not simulated on paper.</p>
     </div>
   </section>
 
   <section class="phase" id="p7">
     <div class="phase-head">
       <span class="phase-num">07</span>
-      <span class="status-pill next">Next</span>
+      <span class="status-pill done">Done</span>
       <h2 class="phase-title">Going further: MCP servers and multi-agent design</h2>
     </div>
     <p class="phase-sub">The capstone: build the kind of tool you've been using all along, and use orchestration patterns beyond single-agent chat.</p>
     <a class="lesson-link" href="https://github.com/nickhargreaves/ClaudePowerUser/blob/main/docs/lessons/07-mcp-agents.md">Follow this phase yourself &rarr;</a>
     <div class="cards">
       <div class="card">
-        <p class="label">Concepts</p>
+        <p class="label">What happened</p>
         <ul>
-          <li>Building a small MCP server (e.g. exposing TaskFlow's own API as tools)</li>
-          <li>Claude Agent SDK basics — a custom agent instead of raw API calls</li>
-          <li>Multi-agent orchestration: when parallel subagents actually pay off vs. add noise</li>
-          <li>Where Claude Desktop and Cowork fit vs. Claude Code — same model, different loop</li>
+          <li>A small <code>mcp.server.fastmcp.FastMCP</code> server, stdio transport, exposing TaskFlow's own REST API as six tools — a thin wrapper around the running backend, not a second store</li>
+          <li>Verified through the real MCP protocol via the Inspector, not just imports: tool listing, a full <code>taskflow_create_task</code> call round-tripped and confirmed against the backend directly, and every error path (404, connection-refused, upstream-502) exercised on its own</li>
+          <li>A recurring chore — a weekly triage-usage digest — retired to an actual scheduled Claude agent (not a script run by CI), run once manually first to prove it produces a correct entry before trusting the schedule unattended</li>
         </ul>
       </div>
       <div class="card">
-        <p class="label">Exercises</p>
-        <ul>
-          <li>Write an MCP server wrapping TaskFlow, connect it in Claude Desktop, manage tasks by chatting</li>
-          <li>Rebuild the triage feature on the Agent SDK instead of a raw API call</li>
-          <li>Retire one manual chore to Cowork or a scheduled agent</li>
-        </ul>
+        <p class="label">The plan said "Agent SDK" — that was wrong</p>
+        <p>The lesson goal says rebuild triage on the Claude Agent SDK. But that SDK is Claude Code itself, packaged as a library — a full coding-agent harness (file tools, bash, subagents, permissions) for open-ended work. TaskFlow's triage call is one forced-tool classification request, not an agent. That mismatch got caught and confirmed with a human <em>before</em> any code was written, and the rebuild happened on the Anthropic SDK's Tool Runner instead — the right next tier up, honestly assessed as a small real win, not oversold as a rewrite.</p>
       </div>
     </div>
     <div class="milestone">
       <span class="dot"></span>
-      <p><strong>Milestone —</strong> manage TaskFlow tasks from Claude Desktop via your own MCP server, and a scheduled agent sends a weekly summary without you asking.</p>
+      <p><strong>Milestone hit —</strong> TaskFlow tasks managed live from a real MCP client via a self-written server, and a scheduled agent (not a cron script) produces a weekly digest without being asked.</p>
     </div>
   </section>
 
@@ -634,8 +631,8 @@
         <tr><td>03 Testing</td><td>verify skill, TDD loop</td><td class="status-done">done</td></tr>
         <tr><td>04 CI/CD</td><td>/code-review, branch protection</td><td class="status-done">done</td></tr>
         <tr><td>05 Deployment</td><td>Guided deploy, risk narration</td><td class="status-done">done</td></tr>
-        <tr><td>06 Observability</td><td>Log-driven debugging</td><td class="status-next">next</td></tr>
-        <tr><td>07 MCP &amp; agents</td><td>MCP server, Agent SDK, Cowork</td><td class="status-next">next</td></tr>
+        <tr><td>06 Observability</td><td>Log-driven debugging</td><td class="status-done">done</td></tr>
+        <tr><td>07 MCP &amp; agents</td><td>MCP server, Tool Runner, scheduled agent</td><td class="status-done">done</td></tr>
       </tbody>
     </table>
   </div>

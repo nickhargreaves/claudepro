@@ -29,7 +29,7 @@ test, a UI to ship, an LLM call to observe, and a deploy target to watch in
 production.
 
 **Stack:** FastAPI &middot; React + Vite + TypeScript &middot; pytest / vitest
-&middot; GitHub Actions &middot; Docker &middot; Claude Agent SDK
+&middot; GitHub Actions &middot; Docker &middot; Claude API Tool Runner &middot; MCP
 
 ## Running it locally
 

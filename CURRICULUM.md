@@ -16,7 +16,7 @@ phase has a `phase-0N-done` git tag and a step-by-step lesson in
 - [x] 03 — Testing (pytest, Vitest, verify skill)
 - [x] 04 — CI/CD (GitHub Actions, code-review, ultrareview)
 - [x] 05 — Deployment (Docker, secrets, real deploy target)
-- [ ] 06 — Observability (structured logging, LLM call tracing)
+- [x] 06 — Observability (structured logging, LLM call tracing)
 - [ ] 07 — MCP & agents (own MCP server, Agent SDK, Cowork)
 
 ## Phase 00 — Setup
@@ -140,7 +140,7 @@ phase has a `phase-0N-done` git tag and a step-by-step lesson in
   and the site itself stays up (graceful 502, not a crash-loop) when the
   backend is temporarily down
 
-## Phase 06 — Observability (in progress — blocked on Fly billing)
+## Phase 06 — Observability
 
 - Structured JSON logging on every request (`request_id`, `method`, `path`,
   `status_code`, `latency_ms`) via a FastAPI middleware
@@ -162,18 +162,36 @@ phase has a `phase-0N-done` git tag and a step-by-step lesson in
   that silently dropped everything after one malformed chunk, an off-by-one
   in the p95 calculation that reported the max instead, and duplicated CLI
   logic across the two scripts
-- **Blocked, honestly:** merging this to `main` triggers CD, which failed
-  on both apps — Fly's free trial ended and now requires a credit card on
-  the account. This turned out to affect more than new deploys: the
-  already-running apps stopped being reachable too (`taskflow-nh-web.fly.dev`
-  and the API both return connection failures, and `flyctl status` itself
-  errors with "trial has ended" — the trial ending suspended the running
-  machines, not just the ability to update them). This needs the user's
-  own action (adding payment details is not something to hand to Claude);
-  deferred rather than worked around. The code itself is fully merged,
-  tested, and verified locally — what's outstanding is getting the apps
-  running again and the milestone's live-incident-simulation exercise,
-  which needs a reachable deployment to run against
+- **Fly deploy deferred, Docker deploy also unavailable:** merging to
+  `main` triggers CD, which failed on both apps — Fly's free trial ended
+  and now requires a credit card, which suspended the already-running
+  machines too, not just new deploys. Adding payment details is the
+  user's action, not Claude's, so this was deferred rather than routed
+  around. `docker compose up` was tried as a local, cloud-free
+  alternative, but Docker Desktop's VM failed to boot in this sandboxed
+  environment (process count kept dropping instead of stabilizing —
+  consistent with no nested-virtualization access) and was abandoned
+  after a real, observed failure rather than more retries
+- **Live incident simulation, run without Docker or Fly:** ran the two
+  dev servers directly instead (`uv run uvicorn` + `npm run dev`, per
+  `CLAUDE.md`'s documented workflow) — real separate processes, real
+  structured JSON logs, no simulation. Verified the full stack end to end
+  in a browser first (`Backend status: ok`). Then deliberately broke it:
+  swapped `ANTHROPIC_API_KEY` in `backend/.env` for an invalid value,
+  restarted the backend, and fired three real triage requests, all
+  genuine 502s. Captured the resulting logs and ran
+  `scripts/triage_metrics.py` and `scripts/check_triage_health.py`
+  against them cold, the way an on-call engineer would: the dashboard
+  showed 0/3 ok, the health check correctly fired `ALERT` on a 100% error
+  rate (exit 1). Root-caused past the alert to the actual mechanism by
+  reading `main.py`'s triage route — and surfaced a real, previously
+  unknown gap doing so: the `triage_call` log event records *that* a
+  call failed but never the exception's type or message, so from
+  `flyctl logs` alone an on-call engineer could tell the integration was
+  failing but not why, without a traceback-level log or exception
+  tracker. `.env` was restored and the backend confirmed healthy again
+  immediately after; `.env` is gitignored, so none of this touched git
+  history
 
 ## Phase 07 — MCP & agents (next)
 
